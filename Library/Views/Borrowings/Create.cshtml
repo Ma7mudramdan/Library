@@ -1,0 +1,99 @@
+﻿@model LibraryManagementSystem.Models.Borrowing
+
+@{
+    ViewData["Title"] = "Borrow Book";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3>@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Display Error Messages -->
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="MemberId" class="form-label">Member *</label>
+                            <select asp-for="MemberId" class="form-select" required>
+                                <option value="">-- Select Member --</option>
+                                @if (ViewBag.Members != null)
+                                {
+                                    foreach (var member in ViewBag.Members)
+                                    {
+                                        <option value="@member.Id">@member.FullName</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="MemberId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="BookId" class="form-label">Book *</label>
+                            <select asp-for="BookId" class="form-select" required>
+                                <option value="">-- Select Book --</option>
+                                @if (ViewBag.Books != null)
+                                {
+                                    foreach (var book in ViewBag.Books)
+                                    {
+                                        <option value="@book.Id">@book.Title (Available: @book.AvailableCopies)</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="BookId" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BorrowDate" class="form-label">Borrow Date *</label>
+                                <input asp-for="BorrowDate" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                                <span asp-validation-for="BorrowDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ExpectedReturnDate" class="form-label">Expected Return Date *</label>
+                                <input asp-for="ExpectedReturnDate" class="form-control" type="date" value="@DateTime.Now.AddDays(14).ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="ExpectedReturnDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Borrowing Rules:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Books can be borrowed for 14 days maximum</li>
+                                <li>Late fee is $5 per day for overdue books</li>
+                                <li>Members with overdue books cannot borrow new books</li>
+                                <li>Maximum 5 books per member at a time</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-hand-holding-heart"></i> Confirm Borrowing
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

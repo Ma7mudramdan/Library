@@ -1,0 +1,133 @@
+﻿@model LibraryManagementSystem.Models.Member
+@using Microsoft.EntityFrameworkCore
+
+@{
+    ViewData["Title"] = "Member Details";
+    var borrowingHistory = ViewBag.BorrowingHistory as List<LibraryManagementSystem.Models.Borrowing>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3>Member Information</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.MembershipNumber)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MembershipNumber)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.FullName)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.FullName)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Phone)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Phone)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Address)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Address)</dd>
+
+                        <dt class="col-sm-4">@Html.DisplayNameFor(model => model.RegistrationDate)</dt>
+                        <dd class="col-sm-8">@Model.RegistrationDate.ToShortDateString()</dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3>Quick Actions</h3>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Borrowings" asp-action="Create" asp-route-memberId="@Model.Id" class="btn btn-success">
+                            <i class="fas fa-book"></i> Borrow Book
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Member
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Borrowing History -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3>Borrowing History</h3>
+                </div>
+                <div class="card-body">
+                    @if (borrowingHistory != null && borrowingHistory.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Book Title</th>
+                                        <th>Borrow Date</th>
+                                        <th>Expected Return</th>
+                                        <th>Actual Return</th>
+                                        <th>Status</th>
+                                        <th>Late Fee</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var borrowing in borrowingHistory)
+                                    {
+                                        <tr>
+                                            <td>@borrowing.Book?.Title</td>
+                                            <td>@borrowing.BorrowDate.ToShortDateString()</td>
+                                            <td>@borrowing.ExpectedReturnDate.ToShortDateString()</td>
+                                            <td>@(borrowing.ActualReturnDate?.ToShortDateString() ?? "Not Returned")</td>
+                                            <td>
+                                                @if (borrowing.Status == "Borrowed")
+                                                {
+                                                    <span class="badge bg-warning">Borrowed</span>
+                                                }
+                                                else if (borrowing.Status == "Returned")
+                                                {
+                                                    <span class="badge bg-success">Returned</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Late</span>
+                                                }
+                                            </td>
+                                            <td>@borrowing.LateFee.ToString("C")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No borrowing history found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+﻿@model LibraryManagementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3>Book Details</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Title)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Title)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Author)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Author)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Category)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Category)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ISBN)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.ISBN)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Copies)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Copies)</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.AvailableCopies)</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.AvailableCopies > 0)
+                                    {
+                                        <span class="badge bg-success">@Model.AvailableCopies Available</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Not Available</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.PublishDate)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.PublishDate)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Price)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Price)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Description)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

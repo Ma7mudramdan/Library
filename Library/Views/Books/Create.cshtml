@@ -1,0 +1,116 @@
+﻿@model LibraryManagementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Add New Book";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8" data-aos="fade-up">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-plus-circle"></i> @ViewData["Title"]
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Title" class="form-label">
+                                    <i class="fas fa-heading"></i> Book Title
+                                </label>
+                                <input asp-for="Title" class="form-control" placeholder="Enter book title" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Author" class="form-label">
+                                    <i class="fas fa-user"></i> Author
+                                </label>
+                                <input asp-for="Author" class="form-control" placeholder="Enter author name" />
+                                <span asp-validation-for="Author" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Category" class="form-label">
+                                    <i class="fas fa-tag"></i> Category
+                                </label>
+                                <select asp-for="Category" class="form-select">
+                                    <option value="">Select Category</option>
+                                    <option>Programming</option>
+                                    <option>Science</option>
+                                    <option>History</option>
+                                    <option>Self-Help</option>
+                                    <option>Business</option>
+                                    <option>Fiction</option>
+                                    <option>Fantasy</option>
+                                </select>
+                                <span asp-validation-for="Category" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ISBN" class="form-label">
+                                    <i class="fas fa-barcode"></i> ISBN
+                                </label>
+                                <input asp-for="ISBN" class="form-control" placeholder="Enter ISBN" />
+                                <span asp-validation-for="ISBN" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Copies" class="form-label">
+                                    <i class="fas fa-copy"></i> Total Copies
+                                </label>
+                                <input asp-for="Copies" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="Copies" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="PublishDate" class="form-label">
+                                    <i class="fas fa-calendar"></i> Publish Date
+                                </label>
+                                <input asp-for="PublishDate" class="form-control" type="date" />
+                                <span asp-validation-for="PublishDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Price" class="form-label">
+                                    <i class="fas fa-dollar-sign"></i> Price
+                                </label>
+                                <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">
+                                <i class="fas fa-align-left"></i> Description
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter book description..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Book
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

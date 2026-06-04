@@ -1,0 +1,178 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container mt-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12 text-center" data-aos="fade-down">
+            <h1 class="display-4 text-white mb-3">
+                <i class="fas fa-book-open"></i> Welcome to LibraryHub
+            </h1>
+            <p class="lead text-white">Your comprehensive library management solution</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+            <div class="dashboard-card text-center">
+                <div class="dashboard-card-icon">
+                    <i class="fas fa-book" style="color: #4361ee;"></i>
+                </div>
+                <div class="dashboard-card-title">Total Books</div>
+                <div class="dashboard-card-value" id="totalBooks">0</div>
+                <small class="text-muted">+12% from last month</small>
+            </div>
+        </div>
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+            <div class="dashboard-card text-center">
+                <div class="dashboard-card-icon">
+                    <i class="fas fa-users" style="color: #4caf50;"></i>
+                </div>
+                <div class="dashboard-card-title">Active Members</div>
+                <div class="dashboard-card-value" id="activeMembers">0</div>
+                <small class="text-muted">+8% from last month</small>
+            </div>
+        </div>
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+            <div class="dashboard-card text-center">
+                <div class="dashboard-card-icon">
+                    <i class="fas fa-hand-holding-heart" style="color: #ff9800;"></i>
+                </div>
+                <div class="dashboard-card-title">Active Borrowings</div>
+                <div class="dashboard-card-value" id="activeBorrowings">0</div>
+                <small class="text-muted">Currently borrowed</small>
+            </div>
+        </div>
+        <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+            <div class="dashboard-card text-center">
+                <div class="dashboard-card-icon">
+                    <i class="fas fa-chart-line" style="color: #f44336;"></i>
+                </div>
+                <div class="dashboard-card-title">Monthly Revenue</div>
+                <div class="dashboard-card-value" id="revenue">$0</div>
+                <small class="text-muted">From late fees</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mb-4">
+        <div class="col-md-6" data-aos="fade-right">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar"></i> Books by Category
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" data-aos="fade-left">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> Monthly Borrowings
+                </div>
+                <div class="card-body">
+                    <canvas id="trendChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-plus-circle fa-3x mb-3" style="color: #4361ee;"></i>
+                    <h5>Add New Book</h5>
+                    <p>Expand your library collection</p>
+                    <a asp-controller="Books" asp-action="Create" class="btn btn-primary">Add Book</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-plus fa-3x mb-3" style="color: #4caf50;"></i>
+                    <h5>Register Member</h5>
+                    <p>Add new library members</p>
+                    <a asp-controller="Members" asp-action="Create" class="btn btn-success">Register</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-hand-holding-heart fa-3x mb-3" style="color: #ff9800;"></i>
+                    <h5>Borrow Book</h5>
+                    <p>Process a new borrowing</p>
+                    <a asp-controller="Borrowings" asp-action="Create" class="btn btn-warning">Borrow</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Fetch dashboard data
+        $(document).ready(function() {
+            $.ajax({
+                url: '/Home/GetDashboardData',
+                type: 'GET',
+                success: function(data) {
+                    $('#totalBooks').text(data.totalBooks);
+                    $('#activeMembers').text(data.activeMembers);
+                    $('#activeBorrowings').text(data.activeBorrowings);
+                    $('#revenue').text('$' + data.revenue);
+
+                    // Create category chart
+                    new Chart(document.getElementById('categoryChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: data.categories,
+                            datasets: [{
+                                label: 'Number of Books',
+                                data: data.categoryCounts,
+                                backgroundColor: 'rgba(67, 97, 238, 0.6)',
+                                borderColor: '#4361ee',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'top' }
+                            }
+                        }
+                    });
+
+                    // Create trend chart
+                    new Chart(document.getElementById('trendChart'), {
+                        type: 'line',
+                        data: {
+                            labels: data.months,
+                            datasets: [{
+                                label: 'Borrowings',
+                                data: data.borrowingTrends,
+                                borderColor: '#4caf50',
+                                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'top' }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

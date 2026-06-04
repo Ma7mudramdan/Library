@@ -1,0 +1,122 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Borrowing>
+
+@{
+    ViewData["Title"] = "Borrowings List";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>@ViewData["Title"]</h1>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-hand-holding-heart"></i> New Borrowing
+                </a>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form asp-action="Index" method="get" class="row g-3">
+                        <div class="col-md-5">
+                            <input type="text" name="searchString" class="form-control"
+                                   placeholder="Search by member or book..."
+                                   value="@ViewBag.SearchString" />
+                        </div>
+                        <div class="col-md-5">
+                            <select name="status" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="Borrowed" selected="@(ViewBag.CurrentStatus == "Borrowed")">Borrowed</option>
+                                <option value="Returned" selected="@(ViewBag.CurrentStatus == "Returned")">Returned</option>
+                                <option value="Late" selected="@(ViewBag.CurrentStatus == "Late")">Late</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Borrowings Table -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Book</th>
+                                    <th>Borrow Date</th>
+                                    <th>Expected Return</th>
+                                    <th>Actual Return</th>
+                                    <th>Status</th>
+                                    <th>Late Fee</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Member?.FullName</td>
+                                        <td>@item.Book?.Title</td>
+                                        <td>@item.BorrowDate.ToShortDateString()</td>
+                                        <td>@item.ExpectedReturnDate.ToShortDateString()</td>
+                                        <td>@(item.ActualReturnDate?.ToShortDateString() ?? "Not Returned")</td>
+                                        <td>
+                                            @if (item.Status == "Borrowed")
+                                            {
+                                                <span class="badge bg-warning">Borrowed</span>
+                                            }
+                                            else if (item.Status == "Returned")
+                                            {
+                                                <span class="badge bg-success">Returned</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Late</span>
+                                            }
+                                        </td>
+                                        <td>@item.LateFee.ToString("C")</td>
+                                        <td>
+                                            @if (item.Status == "Borrowed")
+                                            {
+                                                <a asp-action="Return" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-undo"></i> Return
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="History" asp-route-memberId="@item.MemberId" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-history"></i> History
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿@model LibraryManagementSystem.Models.Borrowing
+
+@{
+    ViewData["Title"] = "Return Book";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3>@ViewData["Title"]</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h4>Borrowing Details</h4>
+                        <hr>
+                        <p><strong>Member:</strong> @Model.Member?.FullName</p>
+                        <p><strong>Book:</strong> @Model.Book?.Title</p>
+                        <p><strong>Borrow Date:</strong> @Model.BorrowDate.ToShortDateString()</p>
+                        <p><strong>Expected Return Date:</strong> @Model.ExpectedReturnDate.ToShortDateString()</p>
+
+                        @if (Model.LateFee > 0)
+                        {
+                            <div class="alert alert-warning mt-3">
+                                <strong>Late Fee:</strong> @Model.LateFee.ToString("C")
+                                <br>
+                                <small>Book is @((DateTime.Now - Model.ExpectedReturnDate).Days) days late</small>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-success mt-3">
+                                <strong>No late fee!</strong> Book is returned on time.
+                            </div>
+                        }
+                    </div>
+
+                    <form asp-action="Return">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check-circle"></i> Confirm Return
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
